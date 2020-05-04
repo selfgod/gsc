@@ -15,5 +15,9 @@ func InitDb(config Db) (err error) {
 	if err != nil {
 		panic(err.Error())
 	}
-	return DB.DB().Ping()
+	err = DB.DB().Ping()
+	if err != nil {
+		panic(err.Error())
+	}
+	return
 }

@@ -6,6 +6,8 @@ import (
 	"io/ioutil"
 )
 
+var GConfig *Config
+
 type ConfigBase struct {
 	Env string
 	Dev Config
@@ -13,8 +15,9 @@ type ConfigBase struct {
 }
 
 type Config struct {
-	Db    Db
-	Redis Redis
+	Db     Db
+	Redis  Redis
+	Secret string
 }
 
 type Db struct {
@@ -43,7 +46,9 @@ func LoadConfig() *Config {
 		panic(err.Error())
 	}
 	if ret.Env == "dev" {
-		return &ret.Dev
+		GConfig = &ret.Dev
+	} else {
+		GConfig = &ret.Pro
 	}
-	return &ret.Pro
+	return GConfig
 }

@@ -12,12 +12,12 @@ const (
 func Routers(r *gin.Engine) {
 
 	//r.Use(CheckToken)
-	r.Any(v+"/user", CheckToken, func(context *gin.Context) {
+	r.Any(v+"/user", func(context *gin.Context) {
 		switch context.Request.Method {
 		case http.MethodGet:
 
 		case http.MethodPost:
-
+			CreateUser(context)
 		}
 	})
 

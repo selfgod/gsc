@@ -8,11 +8,16 @@ import (
 )
 
 type LoginData struct {
-	Username string `form:"username" json:"username" binding:"required"`
-	Password string `form:"password" json:"password" binding:"required"`
+	Name string `form:"name" json:"name" binding:"required"`
+	Pass string `form:"pass" json:"pass" binding:"required"`
 }
 type TokenData struct {
 	Token string `form:"token" json:"token" binding:"required"`
+}
+
+type UserData struct {
+	Name string `form:"name" json:"name" binding:"required"`
+	Pass string `form:"pass" json:"pass" binding:"required"`
 }
 
 func CheckToken(ctx *gin.Context) {
@@ -44,16 +49,28 @@ func Login(c *gin.Context) {
 
 	if err := c.ShouldBind(&login); err == nil {
 		fmt.Printf("login info:%#v\n", login)
-		//gin.H{
-		//			"username":     login.Username,
-		//			"password": login.Password,
-		//		}
-		token, code, err := User.Login(login.Username, login.Password)
+		token, code, err := User.Login(login.Name, login.Pass)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, ReturnError(nil))
 			return
 		}
-		c.JSON(http.StatusOK, ReturnJson(code, gin.H{token: token}, User.StatusText(code)))
+		c.JSON(http.StatusOK, ReturnJson(code, gin.H{"token": token}, User.StatusText(code)))
+	} else {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	}
+}
+
+func CreateUser(c *gin.Context) {
+	var userData UserData
+
+	if err := c.ShouldBind(&userData); err == nil {
+		fmt.Printf("userData info:%#v\n", userData)
+		code, err := User.CreateUser(userData.Name, userData.Pass)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, ReturnError(nil))
+			return
+		}
+		c.JSON(http.StatusOK, ReturnJson(code, nil, User.StatusText(code)))
 	} else {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 	}
