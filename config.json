@@ -1,0 +1,11 @@
+{
+  "env":"dev",
+  "dev": {
+    "db": {
+      "host": "127.0.0.1:3306",
+      "name": "gsc",
+      "username": "root",
+      "password": "Abcd@1234"
+    }
+  }
+}
